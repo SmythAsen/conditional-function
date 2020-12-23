@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Asen
  * @date 2018/4/29 16:36
  **/
-public class ConditionPool<K, R> {
+public class ConditionalFunction<K, R> {
 
 	/**
 	 * 默认方法，当找不到key时会调用次方法，类似switch中的default条件
@@ -21,19 +21,19 @@ public class ConditionPool<K, R> {
 	/**
 	 * 存放条件的执行函数
 	 */
-	private Map<K, Function<R>> pool;
+	private Map<K, Function<R>> functionPool;
 
 	/**
 	 * 初始化条件池
 	 *
-	 * @param pool 存放条件的map
+	 * @param functionPool 存放条件的map
 	 */
-	public ConditionPool(Map<K, Function<R>> pool) {
-		this.pool = pool;
+	public ConditionalFunction(Map<K, Function<R>> functionPool) {
+		this.functionPool = functionPool;
 	}
 
-	public ConditionPool() {
-		this.pool = new HashMap<>();
+	public ConditionalFunction() {
+		this.functionPool = new HashMap<>();
 	}
 
 	/**
@@ -43,8 +43,8 @@ public class ConditionPool<K, R> {
 	 * @param function  条件方法
 	 * @return ConditionPool
 	 */
-	public ConditionPool<K, R> add(K condition, Function<R> function) {
-		this.pool.put(condition, function);
+	public ConditionalFunction<K, R> add(K condition, Function<R> function) {
+		this.functionPool.put(condition, function);
 		return this;
 	}
 
@@ -56,8 +56,8 @@ public class ConditionPool<K, R> {
 	 * @param function   条件方法
 	 * @return ConditionPool
 	 */
-	public ConditionPool<K, R> add(List<K> conditions, Function<R> function) {
-		conditions.forEach(k -> this.pool.put(k, function));
+	public ConditionalFunction<K, R> add(List<K> conditions, Function<R> function) {
+		conditions.forEach(k -> this.functionPool.put(k, function));
 		return this;
 	}
 
@@ -68,7 +68,7 @@ public class ConditionPool<K, R> {
 	 * @param defaultFunction 条件方法
 	 * @return ConditionPool
 	 */
-	public ConditionPool<K, R> addDefault(Function<R> defaultFunction) {
+	public ConditionalFunction<K, R> addDefault(Function<R> defaultFunction) {
 		this.defaultFunction = defaultFunction;
 		return this;
 	}
@@ -81,8 +81,8 @@ public class ConditionPool<K, R> {
 	 * @return 条件执行结果
 	 */
 	public R doIf(K condition) {
-		if (this.pool.containsKey(condition)) {
-			return pool.get(condition).invoke();
+		if (this.functionPool.containsKey(condition)) {
+			return functionPool.get(condition).invoke();
 		}
 		if (Objects.nonNull(this.defaultFunction)) {
 			return defaultFunction.invoke();
@@ -98,8 +98,8 @@ public class ConditionPool<K, R> {
 	 * @param defaultFunction 当条件不存在时需要执行的方法
 	 */
 	public R doIfWithDefault(K condition, Function<R> defaultFunction) {
-		if (this.pool.containsKey(condition)) {
-			return pool.get(condition).invoke();
+		if (this.functionPool.containsKey(condition)) {
+			return functionPool.get(condition).invoke();
 		} else {
 			return defaultFunction.invoke();
 		}
