@@ -6,10 +6,12 @@ package com.asen.util;
  * @Date: Create in 17:35 2018/4/29 0029
  * @Email: SmythAsen@gmail.com
  **/
-public interface Function {
-	
+public interface Function<R> {
+
 	/**
-	 * need to do something
+	 * 条件出发具体逻辑
+	 *
+	 * @return 处理结果
 	 */
-	void invoke();
+	R invoke();
 }
